@@ -70,6 +70,21 @@ add_executable(${PROJECT_NAME} ${PROJECT_FILES})
 
 set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT ${PROJECT_NAME})
 
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+
+# Set Debugger Working Directory
+set_property(TARGET ${PROJECT_NAME} PROPERTY 
+    VS_DEBUGGER_WORKING_DIRECTORY 
+    "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/$<CONFIG>")
+
+# Copy the data directory after building
+add_custom_command(
+    TARGET ${PROJECT_NAME} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+    "${CMAKE_SOURCE_DIR}/data" "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/data"
+)
+
+
 target_link_libraries(${PROJECT_NAME} PRIVATE sfml-graphics)
 target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_17)
 
